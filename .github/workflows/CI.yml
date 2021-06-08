@@ -46,8 +46,6 @@ jobs:
         shell: bash
         run: |
           ./.sonar/scanner/dotnet-sonarscanner begin /k:"Freaks-Fontys_Freaks-AuthService" /o:"freaks-fontys" /d:sonar.login="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io"
-          <your clean build command>
-          
 # Build and test section
       - name: Setup .NET
         uses: actions/setup-dotnet@v1
