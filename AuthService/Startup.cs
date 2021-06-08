@@ -45,7 +45,7 @@ namespace AuthService
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Jwt:Key"]))
         };
     });
-            var env = Configuration.GetValue<string>("Environment");
+            var env = Configuration.GetValue<string>("ASPNETCORE_ENVIRONMENT");
             string mySqlConnectionStr = env.ToLower() == "development" ? Configuration.GetConnectionString("Local") : Configuration.GetConnectionString("Production");
             services.AddDbContextPool<AuthDbContext>(options => options.UseMySql(mySqlConnectionStr, ServerVersion.AutoDetect(mySqlConnectionStr)));
             services.AddControllers();
