@@ -24,6 +24,6 @@ namespace AuthService
                     webBuilder.UseStartup<Startup>();
                     webBuilder.ConfigureAppConfiguration(config =>
                                         config.AddJsonFile($"appsettings.{env}.json"));
-                }).ConfigureLogging(logging => logging.AddConsole());
+                });
     }
 }
