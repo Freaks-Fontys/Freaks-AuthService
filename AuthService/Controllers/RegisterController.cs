@@ -12,8 +12,8 @@ namespace AuthService.Controllers
     [ApiController]
     public class RegisterController : ControllerBase
     {
-        ILogger<RegisterController> _logger;
-        AuthLogic logic;
+        private readonly ILogger<RegisterController> _logger;
+        private readonly AuthLogic logic;
 
         public RegisterController(IConfiguration config, AuthDbContext context, ILogger<RegisterController> logger)
         {
@@ -25,12 +25,18 @@ namespace AuthService.Controllers
         [HttpPost]
         public IActionResult Register([FromBody] UserRegister user)
         {
+            _logger.LogDebug($"/user/register endpoint called with user {user?.Email}", user);
             IActionResult response = BadRequest();
-            User newUser = logic.RegisterUser(user);
+            User dbUser = logic.RegisterUser(user);
 
-            if (newUser != null)
+            if (dbUser != null)
             {
-                response = Ok(newUser);
+                _logger.LogTrace($"user with email {dbUser.Email} registered with id {dbUser.Id}");
+                response = Ok(dbUser);
+            }
+            else
+            {
+                _logger.LogDebug($"no user created with email {dbUser.Email}");
             }
 
             return response;
