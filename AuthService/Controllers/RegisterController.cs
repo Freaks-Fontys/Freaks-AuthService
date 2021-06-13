@@ -2,13 +2,9 @@
 using AuthService.Logic;
 using AuthService.Models;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 
 namespace AuthService.Controllers
 {
@@ -16,11 +12,13 @@ namespace AuthService.Controllers
     [ApiController]
     public class RegisterController : ControllerBase
     {
+        ILogger<RegisterController> _logger;
         AuthLogic logic;
 
-        public RegisterController(IConfiguration config, AuthDbContext context)
+        public RegisterController(IConfiguration config, AuthDbContext context, ILogger<RegisterController> logger)
         {
             logic = new AuthLogic(config, context);
+            _logger = logger;
         }
 
         [AllowAnonymous]
