@@ -2,13 +2,9 @@
 using AuthService.Logic;
 using AuthService.Models;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 
 namespace AuthService.Controllers
 {
@@ -16,23 +12,31 @@ namespace AuthService.Controllers
     [ApiController]
     public class RegisterController : ControllerBase
     {
-        AuthLogic logic;
+        private readonly ILogger<RegisterController> _logger;
+        private readonly AuthLogic logic;
 
-        public RegisterController(IConfiguration config, AuthDbContext context)
+        public RegisterController(IConfiguration config, AuthDbContext context, ILogger<RegisterController> logger)
         {
             logic = new AuthLogic(config, context);
+            _logger = logger;
         }
 
         [AllowAnonymous]
         [HttpPost]
         public IActionResult Register([FromBody] UserRegister user)
         {
+            _logger.LogDebug($"/user/register endpoint called with user {user?.Email}", user);
             IActionResult response = BadRequest();
-            User newUser = logic.RegisterUser(user);
+            User dbUser = logic.RegisterUser(user);
 
-            if (newUser != null)
+            if (dbUser != null)
             {
-                response = Ok(newUser);
+                _logger.LogTrace($"user with email {dbUser.Email} registered with id {dbUser.Id}");
+                response = Ok(dbUser);
+            }
+            else
+            {
+                _logger.LogDebug($"no user created with email {dbUser.Email}");
             }
 
             return response;
