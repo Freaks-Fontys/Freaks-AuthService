@@ -1,3 +1,4 @@
+using AuthService.Config;
 using AuthService.Database;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
@@ -49,6 +50,8 @@ namespace AuthService
             var env = Configuration.GetValue<string>("ASPNETCORE_ENVIRONMENT");
             string mySqlConnectionStr = env.ToLower() == "development" ? Configuration.GetConnectionString("Local") : Configuration.GetConnectionString("Production");
             services.AddDbContextPool<AuthDbContext>(options => options.UseMySql(mySqlConnectionStr, ServerVersion.AutoDetect(mySqlConnectionStr)));
+            services.Configure<UserServiceHostConfig>(Configuration.GetSection("UserService"));
+            services.AddScoped<UserServiceClient>();
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {

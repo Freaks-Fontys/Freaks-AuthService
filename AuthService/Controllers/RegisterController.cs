@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using System.Threading.Tasks;
 
 namespace AuthService.Controllers
 {
@@ -14,16 +15,19 @@ namespace AuthService.Controllers
     {
         private readonly ILogger<RegisterController> _logger;
         private readonly AuthLogic logic;
+        private readonly UserServiceClient _client;
+        
 
-        public RegisterController(IConfiguration config, AuthDbContext context, ILogger<RegisterController> logger)
+        public RegisterController(IConfiguration config, AuthDbContext context, ILogger<RegisterController> logger, UserServiceClient client)
         {
             logic = new AuthLogic(config, context);
             _logger = logger;
+            _client = client;
         }
 
         [AllowAnonymous]
         [HttpPost]
-        public IActionResult Register([FromBody] UserRegister user)
+        public async Task<IActionResult> Register([FromBody] UserRegister user)
         {
             _logger.LogDebug($"/user/register endpoint called with user {user?.Email}", user);
             IActionResult response = BadRequest();
@@ -32,6 +36,7 @@ namespace AuthService.Controllers
             if (dbUser != null)
             {
                 _logger.LogTrace($"user with email {dbUser.Email} registered with id {dbUser.Id}");
+                await _client.SendUserCreated(dbUser);
                 response = Ok(dbUser);
             }
             else
