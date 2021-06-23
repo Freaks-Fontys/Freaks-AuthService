@@ -34,7 +34,7 @@ namespace AuthService.Controllers
             User dbUser = logic.RegisterUser(user);
             if (dbUser != null)
             {
-                // await _client.SendUserCreated(dbUser);
+                 await _client.SendUserCreated(dbUser);
                 response = Ok(dbUser);
             }
 
