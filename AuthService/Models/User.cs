@@ -16,6 +16,7 @@ namespace AuthService.Models
         public String AvatarURL { get; set; }
         public DateTime RegisteredAt { get; set; }
         public DateTime LatestLoginAt { get; set; }
+        public DateTime UpdatedAt { get; set; }
         public DateTime DeletedAt { get; set; }
 
     }
