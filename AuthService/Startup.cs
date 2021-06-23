@@ -52,6 +52,7 @@ namespace AuthService
             services.AddDbContextPool<AuthDbContext>(options => options.UseMySql(mySqlConnectionStr, ServerVersion.AutoDetect(mySqlConnectionStr)));
             services.Configure<UserServiceHostConfig>(Configuration.GetSection("UserService"));
             services.AddScoped<UserServiceClient>();
+            services.AddLogging();
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
@@ -62,7 +63,6 @@ namespace AuthService
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory)
         {
-            //loggerFactory.AddNLog();
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
